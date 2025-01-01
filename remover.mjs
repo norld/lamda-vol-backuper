@@ -2,7 +2,7 @@ import * as AWS from "@aws-sdk/client-s3";
 
 const BUCKET_NAME = process.env.S3_BUCKET_NAME;
 const DAYS_OLD = 30;
-const s3 = new AWS.S3({ region: 'ap-southeast-3' });
+const s3 = new AWS.S3({ region: process.env.AWS_REGION });
 
 export const handler = async (event) => {
   try {

@@ -3,10 +3,10 @@ import { Client } from 'ssh2';
 import fs from 'fs';
 import path from 'path';
 
-const { VOLUME_NAME_FROM_ENV, S3_BUCKET_NAME } = process.env;
+const { VOLUME_NAME_FROM_ENV, S3_BUCKET_NAME, AWS_REGION } = process.env;
 
 // Initialize S3 client
-const s3 = new AWS.S3({ region: 'ap-southeast-3' });
+const s3 = new AWS.S3({ region: process.env.AWS_REGION });
 
 export const handler = async (event, context) => {
   // Function to perform the backup
