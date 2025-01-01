@@ -1,0 +1,16 @@
+{
+  "name": "lamda-db-backup",
+  "version": "1.0.0",
+  "description": "A project for backing up databases",
+  "main": "index.mjs",
+  "scripts": {
+    "start": "node index.mjs"
+  },
+  "author": "Norld",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.717.0",
+    "dotenv": "^16.4.7",
+    "ssh2": "^1.16.0"
+  }
+}
