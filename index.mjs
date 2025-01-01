@@ -60,19 +60,28 @@ export const handler = async (event, context) => {
                 console.log("@params", params)
                 s3.putObject(params, (s3Err, data) => {
                   if (s3Err) {
-                  console.log("@s3Err", s3Err);
-                  reject(s3Err);
-                  return;
+                    console.log("@s3Err", s3Err);
+                    reject(s3Err);
+                    return;
                   }
                   if (fs.existsSync(localFilePath)) {
-                  fs.unlinkSync(localFilePath); // Synchronous deletion
-                  console.log(`Temporary file deleted: ${localFilePath}`);
+                    fs.unlinkSync(localFilePath); // Synchronous deletion
+                    console.log(`Temporary file deleted: ${localFilePath}`);
                   } else {
-                  console.log("Temporary file does not exist.");
+                    console.log("Temporary file does not exist.");
                   }
                   console.log(`File uploaded successfully at ${params.Key}`);
-                  resolve(`File uploaded successfully at ${params.Key}`);
-                  ssh.end();
+
+                  // Remove the backup file on the server
+                  sftp.unlink(remoteFilePath, (unlinkErr) => {
+                    if (unlinkErr) {
+                      console.error(`Failed to delete remote backup file: ${unlinkErr}`);
+                    } else {
+                      console.log(`Remote backup file deleted: ${remoteFilePath}`);
+                    }
+                    resolve(`File uploaded successfully at ${params.Key}`);
+                    ssh.end();
+                  });
                 });
               });
             });
