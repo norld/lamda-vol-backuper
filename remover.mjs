@@ -1,14 +1,14 @@
 import * as AWS from "@aws-sdk/client-s3";
 
-const BUCKET_NAME = "portolabs-backup";
-const DAYS_OLD = 1;
+const BUCKET_NAME = process.env.S3_BUCKET_NAME;
+const DAYS_OLD = 30;
 const s3 = new AWS.S3({ region: 'ap-southeast-3' });
 
 export const handler = async (event) => {
   try {
     // List objects in the bucket
-    const objects = await s3.listObjectsV2({ Bucket: BUCKET_NAME }).promise();
-
+    const objects = await s3.listObjects({ Bucket: BUCKET_NAME });
+    console.log("@objects", objects)
     const currentTime = new Date().getTime();
 
     // Filter objects older than 30 days
@@ -31,7 +31,7 @@ export const handler = async (event) => {
       },
     };
 
-    const result = await s3.deleteObjects(deleteParams).promise();
+    const result = await s3.deleteObjects(deleteParams);
 
     console.log("Deleted files:", result.Deleted);
     return {
