@@ -6,9 +6,9 @@ import path from 'path';
 const { VOLUME_NAME_FROM_ENV, S3_BUCKET_NAME, AWS_REGION } = process.env;
 
 // Initialize S3 client
-const s3 = new AWS.S3({ region: process.env.AWS_REGION });
+const s3 = new AWS.S3({ region: AWS_REGION });
 
-export const handler = async (event, context) => {
+export const handler = async () => {
   // Function to perform the backup
   async function performBackup() {
     // Configuration from environment variables
@@ -28,7 +28,7 @@ export const handler = async (event, context) => {
             console.log(`STDOUT: ${data.toString()}`);
           });
 
-          stream.on('close', (code, signal) => {
+          stream.on('close', (code) => {
             if (code !== 0) {
               reject(new Error(`Backup process exited with code ${code}`));
               return;
@@ -58,7 +58,7 @@ export const handler = async (event, context) => {
                   Body: fileContent
                 };
                 console.log("@params", params)
-                s3.putObject(params, (s3Err, data) => {
+                s3.putObject(params, (s3Err, _) => {
                   if (s3Err) {
                     console.log("@s3Err", s3Err);
                     reject(s3Err);
